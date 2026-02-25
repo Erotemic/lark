@@ -676,5 +676,18 @@ class Lark(Serialize):
             raise NotImplementedError("The on_error option is only implemented for the LALR(1) parser.")
         return self.parser.parse(text, start=start, on_error=on_error)
 
+    def iter_generate(self, start: Optional[str]=None, max_depth: int=20, max_results: Optional[int]=None) -> Iterator[str]:
+        """Generate example strings from the grammar.
+
+        The generation is performed as a best-first search over derivations,
+        preferring shorter strings first.
+        """
+        if start is None:
+            start, = self.options.start
+
+        from .generator import GrammarGenerator
+
+        return GrammarGenerator.from_lark(self).iter_generate(start, max_depth=max_depth, max_results=max_results)
+
 
 ###}
