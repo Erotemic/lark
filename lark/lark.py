@@ -681,6 +681,11 @@ class Lark(Serialize):
 
         The generation is performed as a best-first search over derivations,
         preferring shorter strings first.
+
+        Example:
+            >>> p = Lark('start: "x" | "y"')
+            >>> list(p.iter_generate(max_results=2))
+            ['x', 'y']
         """
         if start is None:
             start, = self.options.start

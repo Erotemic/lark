@@ -17,6 +17,13 @@ class GrammarGenerator:
 
     The generator performs a best-first expansion over the grammar rules,
     preferring states with a lower estimated output length.
+
+    Example:
+        >>> from lark import Lark
+        >>> p = Lark('start: "a" | "b"')
+        >>> g = GrammarGenerator.from_lark(p)
+        >>> list(g.iter_generate('start', max_results=2))
+        ['a', 'b']
     """
 
     def __init__(self, rules: Sequence[Rule], terminals: Sequence[TerminalDef]) -> None:
@@ -57,6 +64,13 @@ class GrammarGenerator:
         return cls(lark_inst.rules, lark_inst.terminals)
 
     def iter_generate(self, start: str, max_depth: int = 20, max_results: Optional[int] = None) -> Iterator[str]:
+        """Yield example strings for the given start symbol.
+
+        >>> from lark import Lark
+        >>> p = Lark('start: "a" "a" | "a" "b" | "b" "a" | "b" "b"', parser='lalr')
+        >>> list(p.iter_generate(max_results=4))
+        ['aa', 'ab', 'ba', 'bb']
+        """
         agenda: List[Tuple[int, int, int, Tuple[Symbol, ...]]] = []
         counter = 0
         start_form = (NonTerminal(start),)
